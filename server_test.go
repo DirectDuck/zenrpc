@@ -3,6 +3,7 @@ package zenrpc_test
 import (
 	"bytes"
 	"encoding/json"
+	"log"
 	"os"
 	"testing"
 
@@ -10,16 +11,25 @@ import (
 	"github.com/vmkteam/zenrpc/v2/testdata"
 )
 
-var rpc = zenrpc.NewServer(zenrpc.Options{BatchMaxLen: 5, AllowCORS: true})
+var (
+	testRPC     = zenrpc.NewServer(zenrpc.Options{BatchMaxLen: 5, AllowCORS: true})
+	logRequests = false
+)
 
-func init() {
-	rpc.Register("arith", &testdata.ArithService{})
-	rpc.Register("", &testdata.ArithService{})
-	//rpc.Use(zenrpc.Logger(log.New(os.Stderr, "", log.LstdFlags)))
+func TestMain(m *testing.M) {
+	testRPC.Register("arith", &testdata.ArithService{})
+	testRPC.Register("", &testdata.ArithService{})
+
+	if logRequests {
+		testRPC.Use(zenrpc.Logger(log.New(os.Stderr, "", log.LstdFlags)))
+	}
+
+	result := m.Run()
+	os.Exit(result)
 }
 
 func TestServer_SMD(t *testing.T) {
-	r := rpc.SMD()
+	r := testRPC.SMD()
 	if b, err := json.Marshal(r); err != nil {
 		t.Fatal(err)
 	} else if !bytes.Contains(b, []byte("default")) {

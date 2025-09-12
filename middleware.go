@@ -37,14 +37,14 @@ func Metrics(appName string) MiddlewareFunc {
 
 	rpcErrors := prometheus.NewCounterVec(prometheus.CounterOpts{
 		Namespace: appName,
-		Subsystem: "rpc",
+		Subsystem: "testRPC",
 		Name:      "error_requests_count",
 		Help:      "Error requests count by method and error code.",
 	}, []string{"method", "code"})
 
 	rpcDurations := prometheus.NewSummaryVec(prometheus.SummaryOpts{
 		Namespace: appName,
-		Subsystem: "rpc",
+		Subsystem: "testRPC",
 		Name:      "responses_duration_seconds",
 		Help:      "Response time by method and error code.",
 	}, []string{"method", "code"})
