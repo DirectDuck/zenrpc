@@ -18,7 +18,7 @@ import (
 type contextKey string
 
 const (
-	// defaultBatchMaxLen is default value of BatchMaxLen option in testRPC Server options.
+	// defaultBatchMaxLen is default value of BatchMaxLen option in RPC Server options.
 	defaultBatchMaxLen = 10
 
 	// defaultTargetURL is default value for SMD target url.

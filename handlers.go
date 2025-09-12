@@ -65,7 +65,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			s.httpError(w, http.StatusMethodNotAllowed)
 			return
 		case r.Method != http.MethodPost:
-			// skip testRPC calls
+			// skip rpc calls
 			return
 		}
 	}
