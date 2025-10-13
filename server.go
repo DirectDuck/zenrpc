@@ -30,6 +30,9 @@ const (
 	// context key for namespace.
 	namespaceKey contextKey = "namespace"
 
+	// batchMethods key for all batch methods in request.
+	batchMethodsKey contextKey = "batchMethods"
+
 	// IDKey context key for ID.
 	IDKey contextKey = "id"
 
@@ -152,6 +155,11 @@ func (s *Server) process(ctx context.Context, message json.RawMessage) interface
 		return NewResponseError(nil, InvalidRequest, "", "max requests length in batch exceeded")
 	}
 
+	// set batch methods in request
+	if batch {
+		ctx = newBatchMethodsContext(ctx, methodsFromRequests(requests))
+	}
+
 	// process single request: if request single and not notification  - just run it and return result
 	if !batch && requests[0].ID != nil {
 		return s.processRequest(ctx, requests[0])
@@ -257,6 +265,15 @@ func (s *Server) printf(format string, v ...any) {
 	if s.logger != nil {
 		s.logger.Printf(format, v...)
 	}
+}
+
+func methodsFromRequests(reqs []Request) []string {
+	result := make([]string, 0, len(reqs))
+	for i := range reqs {
+		result = append(result, strings.ToLower(reqs[i].Method))
+	}
+
+	return result
 }
 
 // SMD returns Service Mapping Description object with all registered methods.
@@ -380,6 +397,20 @@ func newIDContext(ctx context.Context, id *json.RawMessage) context.Context {
 // IDFromContext returns request ID from context.
 func IDFromContext(ctx context.Context) *json.RawMessage {
 	if r, ok := ctx.Value(IDKey).(*json.RawMessage); ok {
+		return r
+	}
+
+	return nil
+}
+
+// newBatchMethodsContext creates new context with current batch methods.
+func newBatchMethodsContext(ctx context.Context, methods []string) context.Context {
+	return context.WithValue(ctx, batchMethodsKey, methods)
+}
+
+// BatchMethodsFromContext returns batch method's from context.
+func BatchMethodsFromContext(ctx context.Context) []string {
+	if r, ok := ctx.Value(batchMethodsKey).([]string); ok {
 		return r
 	}
 
