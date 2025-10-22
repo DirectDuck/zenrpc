@@ -69,7 +69,7 @@ func main() {
 	fmt.Println()
 }
 
-// exitOnErr logs the error and exits the program if error is not nil with additional information.
+// exitWithErr logs the error and exits the program if error is not nil with additional information.
 func exitWithErr(err error) {
 	if err == nil {
 		return
