@@ -11,14 +11,14 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gorilla/websocket"
-
 	"github.com/vmkteam/zenrpc/v2"
 	"github.com/vmkteam/zenrpc/v2/testdata"
+
+	"github.com/gorilla/websocket"
 )
 
 func TestServer_ServeHTTPWithHeaders(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(rpc.ServeHTTP))
+	ts := httptest.NewServer(http.HandlerFunc(testRPC.ServeHTTP))
 	defer ts.Close()
 
 	var tc = []struct {
@@ -53,7 +53,7 @@ func TestServer_ServeHTTPWithHeaders(t *testing.T) {
 }
 
 func TestServer_ServeHTTP(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(rpc.ServeHTTP))
+	ts := httptest.NewServer(http.HandlerFunc(testRPC.ServeHTTP))
 	defer ts.Close()
 
 	var tc = []struct {
@@ -128,7 +128,7 @@ func TestServer_ServeHTTP(t *testing.T) {
 }
 
 func TestServer_ServeHTTPNotifications(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(rpc.ServeHTTP))
+	ts := httptest.NewServer(http.HandlerFunc(testRPC.ServeHTTP))
 	defer ts.Close()
 
 	var tc = []struct {
@@ -181,7 +181,7 @@ func TestServer_ServeHTTPNotifications(t *testing.T) {
 }
 
 func TestServer_ServeHTTPBatch(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(rpc.ServeHTTP))
+	ts := httptest.NewServer(http.HandlerFunc(testRPC.ServeHTTP))
 	defer ts.Close()
 
 	var tc = []struct {
@@ -250,7 +250,7 @@ func TestServer_ServeHTTPWithErrors(t *testing.T) {
 	rpcHiddenErrorField := zenrpc.NewServer(zenrpc.Options{AllowCORS: true, HideErrorDataField: true})
 	rpcHiddenErrorField.Register("arith", &testdata.ArithService{})
 
-	ts := httptest.NewServer(http.HandlerFunc(rpc.ServeHTTP))
+	ts := httptest.NewServer(http.HandlerFunc(testRPC.ServeHTTP))
 	defer ts.Close()
 
 	tsHid := httptest.NewServer(http.HandlerFunc(rpcHiddenErrorField.ServeHTTP))
@@ -378,7 +378,7 @@ func TestServer_Extensions(t *testing.T) {
 }
 
 func TestServer_ServeWS(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(rpc.ServeWS))
+	ts := httptest.NewServer(http.HandlerFunc(testRPC.ServeWS))
 	defer ts.Close()
 
 	u, _ := url.Parse(ts.URL)
